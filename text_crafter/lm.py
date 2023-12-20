@@ -1,12 +1,11 @@
 import collections
 import os
 import pickle as pkl
-import time
 import openai
 import wandb
 import pathlib
 import fcntl
-import time
+
 import numpy as np
 
 # Language models provided by OpenAI. They are ranked from best to worst (quality-wise)
@@ -283,6 +282,7 @@ class GPTLanguageModel(LanguageModel):
         }, step=step)
 
     def load_and_save_cache(self):
+        import time
         start_time = time.time()
         new_cache = self.load_cache()
         # Combine existing and new cache
@@ -298,6 +298,7 @@ class GPTLanguageModel(LanguageModel):
         return self.cache[inputs]
     
     def try_query(self, inputs):
+        import time
         query_start_time = time.time()
         response = None
         attempts = 0
@@ -333,6 +334,7 @@ class GPTLanguageModel(LanguageModel):
         state_dict: a dictionary with language strings as values. {'inv' : inventory, 'status': health status, 'actions': actions, 'obs': obs}
 
         """
+        import time
         start_time = time.time()
         prompt = self.prompt_format.format_prompt(state_dict)
         inputs = (self.lm, prompt, self.max_tokens, self.temperature, tuple(self.stop))

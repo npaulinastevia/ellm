@@ -179,6 +179,7 @@ class BaseTextEnv(Env):
 
     def tokenize_str(self, s):
         """Tokenize a string using the vocab index"""
+
         if self.use_sbert:  # Use SBERT tokenizer
             return np.array(self.tokenizer(s)['input_ids'])
         # Use the vocab index

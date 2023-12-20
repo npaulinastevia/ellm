@@ -24,17 +24,18 @@ objects = ['arrow', 'coal', 'cow', 'diamond', 'furnace', 'grass', 'iron', 'iron_
            'stone_pickaxe', 'stone_sword', 'table', 'tree', 'water', 'wood_pickaxe', 'wood_sword', 'zombie']
 class Predictor():
     def __init__(self, prefix_size_transition=1024+56, prefix_size_state=512+56, transition_weight_path=path_to_transition_weights, state_weight_path=path_to_state_weights):
-        self.device = torch.device("cuda")
+        self.device = torch.device("cpu")
+        print(pathlib.Path(os.path.dirname(os.path.realpath(__file__))) )
         self.clip_model, self.preprocess = clip.load("ViT-B/32", device=self.device, jit=False)
         self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
         self.prefix_length = 10
         self.transition_model = ClipCaptionModel(self.prefix_length, prefix_size=prefix_size_transition)
-        self.transition_model.load_state_dict(torch.load(transition_weight_path, map_location=torch.device("cpu")))
+        #self.transition_model.load_state_dict(torch.load(transition_weight_path, map_location=torch.device("cpu")))
         self.transition_model = self.transition_model.eval()
         self.transition_model = self.transition_model.to(self.device)
 
         self.state_model = ClipCaptionModel(self.prefix_length, prefix_size=prefix_size_state)
-        self.state_model.load_state_dict(torch.load(state_weight_path, map_location=torch.device("cpu")))
+        #self.state_model.load_state_dict(torch.load(state_weight_path, map_location=torch.device("cpu")))
         self.state_model = self.state_model.eval()
         self.state_model = self.state_model.to(self.device)
 

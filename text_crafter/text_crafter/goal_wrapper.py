@@ -212,6 +212,7 @@ class CrafterLMGoalWrapper(CrafterGoalWrapper):
             lm_spec['all_goals'] = self.action_names.copy()
             self.check_ac_success = False
         self.lm = lm_class(prompt_format=prompt_format, **lm_spec)
+
         self.oracle_lm = lm.SimpleOracle(prompt_format=prompt_format, **lm_spec) 
         self.use_sbert_sim = True
         self.device = device
@@ -243,6 +244,7 @@ class CrafterLMGoalWrapper(CrafterGoalWrapper):
         
         self.rw_lock.acquire_write_lock()
         with open(self.cache_path, 'wb') as f:
+
             pkl.dump(self.cache, f)
         self.rw_lock.release_write_lock()
         self.cache_load_time += time.time() - start_time
@@ -266,6 +268,7 @@ class CrafterLMGoalWrapper(CrafterGoalWrapper):
             try:
                 self.rw_lock.acquire_read_lock()
                 with open(self.cache_path, 'rb') as f:
+                    print(self.cache_path)
                     cache = pkl.load(f)
                 self.rw_lock.release_read_lock()
             except FileNotFoundError:
@@ -394,6 +397,7 @@ class CrafterLMGoalWrapper(CrafterGoalWrapper):
         self.goal_str = None
         self.oracle_goal_str = None
         self.lm.reset()
+
         self.oracle_lm.reset()
         self.prev_info = info
         self._make_predictions()
@@ -423,6 +427,8 @@ class CrafterLMGoalWrapper(CrafterGoalWrapper):
             caption = text_obs
         
         self.suggested_actions = self.lm.predict_options({'obs': caption, **inv_status}, self)
+        print(self.suggested_actions,'ok1',caption,"ok333",inv_status)
+        assert False
         self.oracle_suggested_actions = self.oracle_lm.predict_options({'obs': text_obs, **inv_status}, self)
 
         # Filter out bad suggestions

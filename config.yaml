@@ -70,7 +70,7 @@ nstep: 3
 batch_size: 64
 # misc
 seed: 1
-device: cuda
+device: cpu
 save_video: False
 use_tb: false
 use_wandb: false

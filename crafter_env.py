@@ -34,6 +34,7 @@ class Crafter(dm_env.Environment):
         env_spec['seed'] = seed
         self.logdir = logdir
         env = gym.make(env_spec['name'], **env_spec)
+
         if 'CrafterTextEnv' in env_spec['name']:  # NOT baseline, so we have goals and should log
             env = CrafterLoggingWrapper(CrafterLMGoalWrapper(env,
                                                              env_spec['lm_spec'],

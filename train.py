@@ -10,7 +10,7 @@ import os
 
 os.environ['MKL_SERVICE_FORCE_INTEL'] = '1'
 os.environ['MUJOCO_GL'] = 'egl'
-
+os.environ['HYDRA_FULL_ERROR'] = '1'
 from pathlib import Path
 
 import hydra
@@ -355,7 +355,7 @@ class Workspace:
                 self._global_episode += 1
                 # wait until all the metrics schema is populated
                 if self.global_step >= next_log_itr:
-                    log_time = True
+                    log_time = False #modify this because on windows resource module not available, log_time = True
                     next_log_itr = self.global_step + self.cfg.train_log_every - 1
                 if True:
                     # log stats
@@ -458,7 +458,7 @@ class Workspace:
                 if self.train_env.use_sbert_sim:
                     self.train_env.lm.load_and_save_cache()
                     self.eval_env.lm.load_and_save_cache()
-                if self.train_env.use_sbert_sim:
+                if not self.train_env.use_sbert_sim: #modify this to not save save the cache, cause en error occcur self.train_env.use_sbert_sim
                     self.train_env.load_and_save_caches()
                     self.eval_env.load_and_save_caches()
                 self.logger.log('eval_total_time', self.timer.total_time(),
@@ -480,6 +480,7 @@ class Workspace:
                 action = self.agent.act(time_step.observation,
                                         self.global_step,
                                         eval_mode=False, other_model=self.other_model)
+
                 self.train_env.set_rand_actions(self.agent.rand_action)
             self.agent_time += time.time() - start_time
 
@@ -599,7 +600,7 @@ class Workspace:
         
         with temp_snapshot.open('wb') as f:
             torch.save(payload, f)
-            os.rename(temp_snapshot, snapshot)
+        os.rename(temp_snapshot, snapshot)
 
 
     def load_snapshot(self, snapshot=None, agent_only=False):
