@@ -419,7 +419,10 @@ class CrafterLMGoalWrapper(CrafterGoalWrapper):
             return
 
         text_obs, inv_status = self.env.text_obs()
+
         if self._use_state_captioner:
+            print(self.prev_info, type(self.prev_info))
+            assert False
             state_caption = self.state_captioner(self.prev_info)
             self.state_caption = state_caption
             caption = state_caption
@@ -427,7 +430,7 @@ class CrafterLMGoalWrapper(CrafterGoalWrapper):
             caption = text_obs
         
         self.suggested_actions = self.lm.predict_options({'obs': caption, **inv_status}, self)
-        print(self.suggested_actions,'ok1',caption,"ok333",inv_status)
+        print('ok1',caption,type(caption),"ok333",inv_status,type(inv_status))
         assert False
         self.oracle_suggested_actions = self.oracle_lm.predict_options({'obs': text_obs, **inv_status}, self)
 

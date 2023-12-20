@@ -37,8 +37,8 @@ env_spec:
   threshold: .99  # For open generation, cosine similarity threshold above which a goal is considered achieved
   single_task: null  # If not null, train on a single task, e.g. "chop tree"
   single_goal_hierarchical: False  # Train on a single goal, but suggest necessary subgoals first
-  use_state_captioner: False  # Use learned captioner
-  use_transition_captioner: False  # Use learned captioner
+  use_state_captioner: True  # Use learned captioner
+  use_transition_captioner: True  # Use learned captioner
   check_ac_success: True  # Whether to check if an action is successful before rewarding for it
 eval_video_goals: [] # Which goals to save videos of (slow to generate all)
 
