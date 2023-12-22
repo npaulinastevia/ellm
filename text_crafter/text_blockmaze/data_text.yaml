@@ -1,0 +1,39 @@
+good_actions: # Comments are original action names
+  - move left # move_left
+  - move right # move_right
+  - move up # move_up
+  - move down # move_down
+
+decomposed_actions:
+  verbs:
+    - move left # no noun
+    - move right # no noun
+    - move up # no noun
+    - move down # no noun
+  nouns: 
+
+
+actions: # Comments are original action names
+  - move left # move_left
+  - move right # move_right
+  - move up # move_up
+  - move down # move_down
+
+materials:
+
+
+
+
+collect:
+
+
+place:
+
+
+make:
+
+
+achievements:
+  - detect_bug
+  - reach_goal
+
