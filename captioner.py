@@ -327,8 +327,10 @@ if __name__ == '__main__':
         act = 'make wood pickaxe'
         # act = 'make wood sword'
         # act = 'attack skeleton'
-        act = 'eat cow'
+
         act = 'mine stone'
+        act = 'eat cow'
+
         act_idx = env.action_names.index(act)
         new_obs, _, _, new_info = env.step(act_idx)
         init = time.time()

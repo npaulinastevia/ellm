@@ -82,6 +82,7 @@ class Env(BaseClass):
     worldgen.generate_world(self.world, self.player, seed=self._seed)
     dead = False
     reward = 0
+
     info = {
         'player_action': None,
         'inventory': self.player.inventory.copy(),
@@ -132,6 +133,7 @@ class Env(BaseClass):
     health_reward = 0
     over = self._length and self._step >= self._length
     done = dead or over
+
     info = {
         'inventory': self.player.inventory.copy(),
         'achievements': self.player.achievements.copy(),
