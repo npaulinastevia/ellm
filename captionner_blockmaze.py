@@ -23,10 +23,11 @@ objects = []
 class Predictor():
     def __init__(self, prefix_size_transition=1024+56, prefix_size_state=512+56, transition_weight_path=path_to_transition_weights, state_weight_path=path_to_state_weights):
         self.device = torch.device("cpu")
-        print(pathlib.Path(os.path.dirname(os.path.realpath(__file__))) )
+
         self.clip_model, self.preprocess = clip.load("ViT-B/32", device=self.device, jit=False)
         self.tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
         self.prefix_length = 10
+        prefix_size_transition,prefix_size_state= 1024 + 4, 512 + 4
         self.transition_model = ClipCaptionModel(self.prefix_length, prefix_size=prefix_size_transition)
         #self.transition_model.load_state_dict(torch.load(transition_weight_path, map_location=torch.device("cpu")))
         self.transition_model = self.transition_model.eval()
@@ -73,6 +74,7 @@ class Predictor():
             self.time_dict_state['encode_image'] += time.time() - start_time
             start_time = time.time()
             prefix = torch.cat([prefix, semantic_emb_pre], dim=1)
+
             prefix_embed = self.state_model.clip_project(prefix).reshape(1, self.prefix_length, -1)
             self.time_dict_state['clip_project'] += time.time() - start_time
         start_time = time.time()
@@ -115,6 +117,7 @@ class MLP(torch.nn.Module):
     def __init__(self, sizes, bias=True, act=torch.nn.Tanh):
         super(MLP, self).__init__()
         layers = []
+
         for i in range(len(sizes) - 1):
             layers.append(torch.nn.Linear(sizes[i], sizes[i + 1], bias=bias))
             if i < len(sizes) - 2:
@@ -122,6 +125,7 @@ class MLP(torch.nn.Module):
         self.model = torch.nn.Sequential(*layers)
 
     def forward(self, x):
+
         return self.model(x)
 
 
@@ -217,11 +221,11 @@ def extract_representation(info):
     inventory_embedding = np.array([info['inventory'][k] for k in inventory_keys_ordered])
     object_embedding = np.zeros(len(objects))
     obj_set = set()
-    for line in info['local_token']:
-        obj_set = obj_set.union(set(line))
-    for o in obj_set:
-        if o not in ['Player', 'Null']:
-            object_embedding[objects.index(o.lower())] = 1
+    #for line in info['local_token']:
+     #   obj_set = obj_set.union(set(line))
+    #for o in obj_set:
+     #   if o not in ['Player', 'Null']:
+     #       object_embedding[objects.index(o.lower())] = 1
     representation = np.concatenate([action_embedding, inventory_embedding, object_embedding])
     return representation
 
@@ -284,7 +288,7 @@ if __name__ == '__main__':
 
     # test_action_conversion()
     # print(actions_sorted)
-    env = gym.make("CrafterTextEnv-v1", **env_spec)
+    env = gym.make("BlockmazeTextEnv-v1", **env_spec)
 
     show = True  # show
     caption_transition, caption_state, get_time_dicts = get_captioner()
@@ -316,7 +320,7 @@ if __name__ == '__main__':
         new_obs, _, _, new_info = env.step(act_idx)
         init = time.time()
         transition_caption = caption_transition(info, new_info)
-        print(act)
+        print(act,"acccct")
         print(f'Transition caption: {transition_caption}')
         state_caption = caption_state(new_info)
         print(f'State caption: {state_caption}')

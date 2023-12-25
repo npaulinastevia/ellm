@@ -88,7 +88,8 @@ class Env(BaseEnv):
             #self.observation_space = Box(low=0, high=len(self.maze.objects), shape=self.maze.size, dtype=np.uint8)
             self.observation_space = Box(low=0, high=len(self.maze.objects), shape=(400,), dtype=np.uint8)
             self.action_space = Discrete(len(self.motions))
-            self.actions_names=['move down','move left','move right','move up']
+            self.action_names=['move down','move left','move right','move up']
+            self.actions_names = ['move down', 'move left', 'move right', 'move up']
 
             self.context = dict(
                 inputs=1,
@@ -135,15 +136,15 @@ class Env(BaseEnv):
             #'health_reward': health_reward,
             'action_success': goal,
             #'eval_success': eval_success,
-            'player_action': action,
+            'player_action': self.actions_names[action],
             #'inventory': self.player.inventory.copy(),
             #'local_token': self._local_token_view.local_token_view(self.player),
             'large_obs': self.maze.to_value()
         }
         obs = {
             'obs': self.maze.to_value(),
-            'text_obs' :  '',
-            'inv_status': {},
+            #'text_obs' :  '',
+            #'inv_status': {},
             'success': info['action_success']
         }
         return self.tokenize_obs(obs), reward, done, info
@@ -159,8 +160,8 @@ class Env(BaseEnv):
         dead = False
         obs = {
             'obs': self.maze.to_value(),
-           'text_obs' :  "",
-           'inv_status': {},
+           #'text_obs' :  "",
+           #'inv_status': {},
             'success': False
         }
 
@@ -211,15 +212,16 @@ class Env(BaseEnv):
         """
         Takes in obs dict and returns a dict where all strings are tokenized.
         """
-        if self.use_sbert and isinstance(obs_dict['inv_status'], dict):
+        if self.use_sbert : #self.use_sbert and isinstance(obs_dict['inv_status'], dict)
             inv_status = ""
-            for k, v in obs_dict['inv_status'].items():
-                if v != '.' and 'null' not in v:
-                    inv_status += v + " "
-            obs_dict['text_obs'] = obs_dict['text_obs'] + " " + inv_status
+            #for k, v in obs_dict['inv_status'].items():
+            #    if v != '.' and 'null' not in v:
+             #       inv_status += v + " "
+            #obs_dict['text_obs'] = obs_dict['text_obs'] + " " + inv_status
 
         new_obs = {}
         for k, v in obs_dict.items():
+
             # If the value is a dictionary of strings, concatenate them into a single string
             if isinstance(v, dict) and isinstance(list(v.values())[0], str):
                 v = " ".join(v.values())
@@ -230,8 +232,8 @@ class Env(BaseEnv):
             else:
                 # Value is already tokenized (int, array, etc)
                 new_obs[k] = v
-        if self.use_sbert:
-            new_obs['text_obs'] = self.pad_sbert(new_obs['text_obs'])
+        #if self.use_sbert:
+         #   new_obs['text_obs'] = self.pad_sbert(new_obs['text_obs'])
         return new_obs
     def _get_action_vocab(self):
         """Create a list of all possible vocab words."""
